@@ -43,7 +43,7 @@ impl Encoder {
     /// # Safety
     /// 
     /// `context` must be a valid pointer to pass to the callback assigned to `x264_param_t.nalu_process`
-    pub unsafe fn encode_drh(&mut self, image: Image, context: *mut c_void) -> Result<Picture> {
+    pub unsafe fn encode_drh(&mut self, image: Image, idr: bool, context: *mut c_void) -> Result<Picture> {
         let image = image.raw();
 
         let mut picture = MaybeUninit::uninit();
@@ -51,6 +51,12 @@ impl Encoder {
         let mut picture = picture.assume_init();
         picture.opaque = context;
         picture.img = image;
+        
+        if idr {
+            picture.i_type = X264_TYPE_IDR as i32;
+        } else {
+            picture.i_type = X264_TYPE_P as i32;
+        }
 
         let mut len = 0;
         let mut stuff = MaybeUninit::uninit();
