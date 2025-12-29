@@ -1,5 +1,6 @@
 use crate::{Data, Encoding, Error, Image, Picture, Result, Setup};
 use core::{mem::MaybeUninit, ptr};
+use core::ffi::c_void;
 use x264::*;
 
 /// Encodes video.
@@ -35,6 +36,41 @@ impl Encoder {
         assert_eq!(image.height(), self.height());
         assert_eq!(image.encoding(), self.encoding());
         unsafe { self.encode_unchecked(pts, image) }
+    }
+    
+    /// Feeds a frame to the encoder relying on a nalu_process callback for further processing
+    /// 
+    /// # Safety
+    /// 
+    /// `context` must be a valid pointer to pass to the callback assigned to `x264_param_t.nalu_process`
+    pub unsafe fn encode_drh(&mut self, image: Image, context: *mut c_void) -> Result<Picture> {
+        let image = image.raw();
+
+        let mut picture = MaybeUninit::uninit();
+        x264_picture_init(picture.as_mut_ptr());
+        let mut picture = picture.assume_init();
+        picture.opaque = context;
+        picture.img = image;
+
+        let mut len = 0;
+        let mut stuff = MaybeUninit::uninit();
+        let mut raw = MaybeUninit::uninit();
+
+        let err = x264_encoder_encode(
+            self.raw,
+            stuff.as_mut_ptr(),
+            &mut len,
+            &mut picture,
+            raw.as_mut_ptr(),
+        );
+
+        if err < 0 {
+            Err(Error)
+        } else {
+            let raw = raw.assume_init();
+            let picture = Picture::from_raw(raw);
+            Ok(picture)
+        }
     }
 
     /// Feeds a frame to the encoder.
