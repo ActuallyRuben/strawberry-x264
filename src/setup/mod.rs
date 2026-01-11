@@ -40,9 +40,9 @@ impl Setup {
         }
         self
     }
-    
+
     /// Enable DRH mode
-    /// 
+    ///
     /// Used for Wii U gamepads
     pub fn drh_mode(mut self) -> Self {
         self.raw.b_drh_mode = 1;
@@ -144,7 +144,7 @@ impl Setup {
             Ok(unsafe { Encoder::from_raw(raw) })
         }
     }
-    
+
     /// Raw access to the internal parameters
     pub unsafe fn raw(&mut self) -> &mut x264_param_t {
         &mut self.raw
