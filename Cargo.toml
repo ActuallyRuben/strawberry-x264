@@ -1,12 +1,12 @@
 [package]
-name = "x264"
-description = "Encoding H.264 video."
+name = "strawberry-x264"
+description = "Encoding H.264 video for Wii U gamepad. Based on the x264 crate"
 keywords = ["x264", "encoding", "h264", "video", "encoder"]
-repository = "https://github.com/quadrupleslap/x264"
-documentation = "https://docs.rs/x264"
+repository = "https://github.com/ActuallyRuben/strawberry-x264"
+documentation = "https://docs.rs/strawberry-x264"
 license = "MIT"
-version = "0.5.0"
-authors = ["Ram <quadrupleslap@gmail.com>", "Sam Nystrom <samuel.l.nystrom@gmail.com>"]
+version = "0.1.0"
+authors = ["ActuallyRuben <ruben@actuallyruben.nl>"]
 
 [dependencies]
 x264-sys = "0.2"
