@@ -1,8 +1,8 @@
-extern crate x264;
+extern crate strawberry_x264;
 
 use std::fs::File;
 use std::io::Write;
-use x264::{Colorspace, Encoder, Image};
+use strawberry_x264::{Colorspace, Encoder, Image};
 
 fn main() {
     const WIDTH: usize = 480;
